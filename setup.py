@@ -13,7 +13,7 @@ if os.name.startswith('nt'):
     # version to do so had "C:\Program Files\Intel\Embree3\" as the default installation location
     # so we'll use that.
     
-    include_path = [np.get_include(), r'C:\Program Files\Intel\Embree3\']
+    include_path = [np.get_include(), r'C:\Program Files\Intel\Embree3']
     libs = [r"C:\Program Files\Intel\Embree3\lib\embree3"]
 else:
     include_path = [np.get_include(),]
