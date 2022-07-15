@@ -63,6 +63,9 @@ Install from latest github source:
 
    ``python -m pip install --no-deps --no-build-isolation --user git+git://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite``
 
+If you're on windows, you need to have embree3 installed and in the default location (C:\Program Files\Intel\Embree3\) before you install pyemblite. To complicate matters, the most recent versions no longer come with an installer, the last version to do so is this one: https://github.com/embree/embree/releases/download/v3.13.2/embree-3.13.2.x64.vc14.msi .
+If you want to use the most recent version instead, make sure you unzip the contents of the zip file into the aforementioned folder.
+You also still need to have build tools installed (some kind of C/C++ compiler). One way to achieve this is to install Visual Studio Build tools. Visual studio build tools likely require the installation of visual studio community edition first. This link should (hopefully) get you started: https://visualstudio.microsoft.com/downloads/
 
 Requirements
 ============
