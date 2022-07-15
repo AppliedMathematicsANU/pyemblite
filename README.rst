@@ -64,7 +64,7 @@ Install from latest github source:
    ``python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite``
 
 If you're on windows, you need to have embree3 installed and in the default 
-location (C:\Program Files\Intel\Embree3\) before you install pyemblite. 
+location (``C:\Program Files\Intel\Embree3\``) before you install pyemblite. 
 To complicate matters, the most recent versions no longer come with an installer, 
 the last version to do so is this one:
 
@@ -79,8 +79,8 @@ build tools likely require the installation of visual studio community edition f
  
  https://visualstudio.microsoft.com/downloads/
 
-Finally, you'll need to manually copy the Embree3.dll from C:\Program Files\Intel\Embree3\bin to C:\windows\system32 and
-(if you are on windows as you likely are these days) also to C:\windows\sysWOW64 . That *should* do it...
+Finally, you'll need to manually copy the Embree3.dll from ``C:\Program Files\Intel\Embree3\bin`` to ``C:\windows\system32`` and
+(if you are on windows as you likely are these days) also to ``C:\windows\sysWOW64`` . That *should* do it...
 
 Requirements
 ============
