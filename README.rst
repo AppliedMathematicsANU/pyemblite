@@ -70,6 +70,7 @@ zip file into a folder where the MS build tools can find them.
 You can always add the embree3 folder to your library and include path by changing the LIB and INCLUDE environment variables:
 
 ``set INCLUDE="C:\Path\to\embree\include\dir:%INCLUDE%"``
+
 ``set LIB="C:\Path\to\embree\lib\dir:%LIB%"``
 
 You also still need to have build tools installed (some kind of C/C++ compiler). 
