@@ -63,24 +63,25 @@ Install from latest github source:
 
    ``python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite``
 
-If you're on windows, you need to have embree3 installed and in the default 
-location (``C:\Program Files\Intel\Embree3\``) before you install pyemblite. 
-To complicate matters, the most recent versions no longer come with an installer, 
-the last version to do so is this one:
+If you're on windows, you need to have embree3 installed. 
+Use the most recent version, make sure you unzip the contents of the 
+zip file into a folder where the MS build tools can find them.
 
-https://github.com/embree/embree/releases/download/v3.13.2/embree-3.13.2.x64.vc14.msi .
+You can always add the embree3 folder to your library and include path by changing the LIB and INCLUDE environment variables:
 
-If you want to use the most recent version instead, make sure you unzip the contents of the zip file into the aforementioned folder.
+`` set INCLUDE="C:\Path\to\embree\include\dir:%INCLUDE%"
+set LIB="C:\Path\to\embree\lib\dir:%LIB%" ``
 
 You also still need to have build tools installed (some kind of C/C++ compiler). 
 One way to achieve this is to install Visual Studio Build tools. Visual studio 
 build tools likely require the installation of visual studio community edition first.
- This link should (hopefully) get you started: 
+This link should (hopefully) get you started: 
  
  https://visualstudio.microsoft.com/downloads/
 
-Finally, you'll need to manually copy the Embree3.dll from ``C:\Program Files\Intel\Embree3\bin`` to ``C:\windows\system32`` and
-(if you are on windows as you likely are these days) also to ``C:\windows\sysWOW64`` . That *should* do it...
+Finally, you'll need to manually copy the Embree3.dll from (standard path when installed) ``C:\Program Files\Intel\Embree3\bin`` 
+to ``C:\windows\system32`` and (if you are on windows as you likely are these days) also to ``C:\windows\sysWOW64`` . 
+That *should* do it...
 
 Requirements
 ============
