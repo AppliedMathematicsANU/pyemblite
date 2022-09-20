@@ -1,1 +1,6 @@
-__version__ = '0.0.1'
+"""
+Embree-3 python API.
+"""
+from . import _version
+
+__version__ = _version.get_versions()['version']

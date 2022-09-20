@@ -6,6 +6,7 @@ from setuptools import setup, Extension, find_packages
 from Cython.Build import cythonize
 import Cython
 from distutils.version import LooseVersion
+import versioneer
 
 include_path = [np.get_include(), ]
 libs = ["embree3"]
@@ -36,7 +37,8 @@ ext_modules = cythonize(extensions, include_path=include_path, language_level=3)
 
 setup(
     name="pyemblite",
-    version='0.0.1',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     ext_modules=ext_modules,
     zip_safe=False,
     packages=find_packages(),
