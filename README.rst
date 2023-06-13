@@ -66,10 +66,10 @@ Install from latest github source::
 
 or from source directory::
 
-  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'``
-  git clone git@github.com:AppliedMathematicsANU/pyemblite.git``
-  cd pyemblite``
-  python -m pip install --no-deps --no-build-isolation --user .``
+  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
+  git clone git@github.com:AppliedMathematicsANU/pyemblite.git
+  cd pyemblite
+  python -m pip install --no-deps --no-build-isolation --user .
 
 If you're on windows, you need to have embree3 installed. 
 Use the most recent version, make sure you unzip the contents of the 
