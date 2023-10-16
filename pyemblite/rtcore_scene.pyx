@@ -14,7 +14,7 @@ from .rtcore cimport Vertex, Triangle
 
 log = logging.getLogger(__name__)
 
-cdef void error_printer(void *userPtr, rtc.RTCError code, const char *_str):
+cdef void error_printer(void *userPtr, rtc.RTCError code, const char *_str) noexcept:
     """
     error_printer function. depends on embree version
     """
