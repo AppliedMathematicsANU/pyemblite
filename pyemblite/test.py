@@ -50,17 +50,21 @@ class TestPyEmblite(TestCase):
 
         embreeDevice = rtc.EmbreeDevice()
         scene = rtcs.EmbreeScene(embreeDevice)
+        self.assertIsNotNone(scene)
 
     def test_pyemblite_should_be_able_to_create_several_scenes(self):
 
         embreeDevice = rtc.EmbreeDevice()
         scene1 = rtcs.EmbreeScene(embreeDevice)
+        self.assertIsNotNone(scene1)
         scene2 = rtcs.EmbreeScene(embreeDevice)
+        self.assertIsNotNone(scene2)
 
     def test_pyemblite_should_be_able_to_create_a_device_if_not_provided(self):
         from pyemblite import rtcore_scene as rtcs
 
         scene = rtcs.EmbreeScene()
+        self.assertIsNotNone(scene)
 
     def test_pyemblite_scene_flags(self):
         from pyemblite import rtcore_scene as rtcs
@@ -237,6 +241,7 @@ class TestIntersectionTrianglesFromIndices(TestCase):
         origins, dirs = define_rays_origins_and_directions()
         self.origins = origins
         self.dirs = dirs
+        del mesh
 
     def test_intersect_simple(self):
         res = self.scene.run(self.origins, self.dirs)
