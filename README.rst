@@ -13,7 +13,10 @@ Python wrapper for Embree-3. Source code adapted from
 Quick Start
 ===========
 
-Example::
+Example:
+
+
+.. code-block:: python
 
    import numpy as np
    import trimesh
