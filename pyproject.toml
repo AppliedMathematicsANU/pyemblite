@@ -1,6 +1,22 @@
 [build-system]
-requires = ["setuptools", "Cython", "wheel", "numpy", "versioneer[toml]"]
+requires = [
+  "setuptools>=42",
+  "Cython",
+  "wheel",
+  "numpy",
+  "versioneer[toml]",
+  "scikit-build",
+  "cmake",
+  "ninja"
+]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyemblite"
+dependencies = [
+    "numpy>=1.14.5"
+]
+dynamic = ["version"]
 
 [tool.versioneer]
 VCS = "git"
