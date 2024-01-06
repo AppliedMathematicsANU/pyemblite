@@ -54,6 +54,21 @@ jobs:
       - name: Install cibuildwheel
         run: python -m pip install cibuildwheel==2.16.2
 
+      - name: Free disk space
+        shell: bash
+        if: ${{}}
+        run: |
+          if [ "${RUNNER_OS}" == "Linux" ]; then
+            df -h
+            echo "Cleaning..."
+            [ -e "/usr/share/dotnet" ] && sudo rm -rf "/usr/share/dotnet"
+            [ -e "/opt/ghc" ] && sudo rm -rf "/opt/ghc"
+            [ -e "/usr/local/share/boost" ] && sudo rm -rf "/usr/local/share/boost"
+            [ -e "${AGENT_TOOLSDIRECTORY}" ] && sudo rm -rf "${AGENT_TOOLSDIRECTORY}"
+            echo "Cleaning...done."
+            df -h
+          fi
+
       - name: Build wheels
         shell: bash
         run: |
