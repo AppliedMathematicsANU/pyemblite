@@ -43,7 +43,6 @@ jobs:
 
       - name: Install cmake and ninja (via get-cmake)
         uses: lukka/get-cmake@latest
-        shell: bash
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
         shell: bash
