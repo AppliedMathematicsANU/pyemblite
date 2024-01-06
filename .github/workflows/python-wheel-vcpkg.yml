@@ -65,8 +65,7 @@ jobs:
           CIBW_ARCHS: "auto64"
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
-          # CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
-          CIBW_BUILD: "cp310-*"
+          CIBW_BUILD: "cp38-* cp39-* cp310-* cp311-* cp312-*"
           # Don't repair macOS wheels
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_WINDOWS: "python -m pip install cmake"
