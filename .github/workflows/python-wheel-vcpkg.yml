@@ -44,9 +44,8 @@ jobs:
       - uses: lukka/get-cmake@latest
         name: Install cmake and ninja (via get-cmake)
 
-      - name: Restore artifacts, or setup vcpkg for building artifacts
-        shell: bash
-        uses: lukka/run-vcpkg@v11
+      - uses: lukka/run-vcpkg@v11
+        name: Restore artifacts, or setup vcpkg for building artifacts
         with:
           # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
           vcpkgDirectory: '${{ runner.workspace }}/vcpkg'
