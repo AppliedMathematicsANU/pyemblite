@@ -42,9 +42,13 @@ jobs:
           fi
 
       - uses: lukka/get-cmake@latest
+        shell: bash
+        if: ${{ runner.os != "Linux" }}
         name: Install cmake and ninja (via get-cmake)
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
+        shell: bash
+        if: ${{ runner.os != "Linux" }}
         uses: lukka/run-vcpkg@v11
         with:
           # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
@@ -56,6 +60,8 @@ jobs:
         id: runvcpkg
 
       - name: Prints output of run-vcpkg's action.
+        shell: bash
+        if: ${{ runner.os != "Linux" }}
         run: |
           echo "VCPKG_ROOT=${VCPKG_ROOT}"
           echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
@@ -66,7 +72,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.16.2
+        shell: bash
+        run: |
+          python -m pip install cibuildwheel==2.16.2
+          if [ "${RUNNER_OS}" == "Linux" ]; then
+            df -h
+          fi
 
       - name: Build wheels
         shell: bash
