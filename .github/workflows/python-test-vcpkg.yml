@@ -75,7 +75,6 @@ jobs:
           cd ~
           echo $(pwd)
           python -c 'import os; import pyemblite; print(os.listdir(os.path.dirname(pyemblite.__file__)))'
-          python -c 'import os; import pyemblite; print(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "models")))'
           python -c 'import pyemblite; print(f"pyemblite.__file__={pyemblite.__file__}"); print(dir(pyemblite))'
 
       - name: Test
