@@ -41,8 +41,8 @@ jobs:
             brew install autoconf automake libtool
           fi
 
-      - name: Install cmake and ninja (via get-cmake)
-        uses: lukka/get-cmake@latest
+      - uses: lukka/get-cmake@latest
+        name: Install cmake and ninja (via get-cmake)
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
         shell: bash
