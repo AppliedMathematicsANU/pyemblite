@@ -145,7 +145,7 @@ class TestIntersectionTriangles(TestCase):
     def test_intersect_simple(self):
         res = self.scene.run(self.origins, self.dirs)
         self.logger.info("res=%s", res)
-        self.assertTrue(np.all([0, 1, 1, -1] == res))
+        self.assertSequenceEqual([0, 1, 1, -1], np.asarray(res).tolist())
 
     def test_intersect_distance(self):
         self.logger.info("origins=%s", self.origins)

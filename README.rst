@@ -13,7 +13,10 @@ Python wrapper for Embree-3. Source code adapted from
 Quick Start
 ===========
 
-Example::
+Example:
+
+
+.. code-block:: python
 
    import numpy as np
    import trimesh
@@ -59,38 +62,42 @@ Example::
 Installation
 ============
 
-Install from latest github source::
+Install from latest github source:
 
-  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
-  python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite
+.. code-block:: console
+   $ python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
+   $ python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite
 
-or from source directory::
+or from source directory:
 
-  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
-  git clone git@github.com:AppliedMathematicsANU/pyemblite.git
-  cd pyemblite
-  python -m pip install --no-deps --no-build-isolation --user .
+.. code-block:: console
 
-If you're on windows, you need to have embree3 installed. 
-Use the most recent version, make sure you unzip the contents of the 
-zip file into a folder where the MS build tools can find them.
+   $ python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
+   $ git clone git@github.com:AppliedMathematicsANU/pyemblite.git
+   $ cd pyemblite
+   $ python -m pip install --no-deps --no-build-isolation --user .
 
-You can always add the embree3 folder to your library and include path by changing the LIB and INCLUDE environment variables:
 
-``set INCLUDE="C:\Path\to\embree\include\dir:%INCLUDE%"``
+If you're on windows, you can use `vcpkg <https://github.com/microsoft/vcpkg>`_ to
+manage non-python dependencies (can also be used on Linux and MacOS):
 
-``set LIB="C:\Path\to\embree\lib\dir:%LIB%"``
+.. code-block:: powershell
 
-You also still need to have build tools installed (some kind of C/C++ compiler). 
-One way to achieve this is to install Visual Studio Build tools. Visual studio 
+   PS > git clone https://github.com/microsoft/vcpkg
+   PS > .\vcpkg\bootstrap-vcpkg.bat
+   PS > $Env:VCPKG_ROOT=$(Resolve-Path ./vcpkg)
+   PS > git clone git@github.com:Shane-J-Latham/pcsr.git
+   PS > cd pcsr
+   PS > python -m pip install --prefix=\path\to\install\root .
+
+
+You also still need to have build tools installed (some kind of C/C++ compiler).
+One way to achieve this is to install Visual Studio Build tools. Visual studio
 build tools likely require the installation of visual studio community edition first.
-This link should (hopefully) get you started: 
- 
+This link should (hopefully) get you started:
+
  https://visualstudio.microsoft.com/downloads/
 
-Finally, you'll need to manually copy the Embree3.dll from (standard path when installed) ``C:\Program Files\Intel\Embree3\bin`` 
-to ``C:\windows\system32`` and (if you are on windows as you likely are these days) also to ``C:\windows\sysWOW64`` . 
-That *should* do it...
 
 Requirements
 ============

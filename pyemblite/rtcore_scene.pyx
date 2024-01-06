@@ -1,6 +1,7 @@
 cimport cython
 cimport numpy as np
 from libcpp cimport bool
+from numpy cimport int32_t
 import numpy as np
 import logging
 import numbers
@@ -72,6 +73,7 @@ cdef class EmbreeScene:
         cdef np.ndarray[np.float32_t, ndim=1] u
         cdef np.ndarray[np.float32_t, ndim=1] v
         cdef np.ndarray[np.float32_t, ndim=2] Ng
+        cdef int32_t INVALID_GEOMETRY_ID=rtcg.RTC_INVALID_GEOMETRY_ID
 
         cdef rayQueryType query_type
 
@@ -109,7 +111,7 @@ cdef class EmbreeScene:
             geomID = np.empty(nv, dtype="int32")
         else:
             intersect_ids = np.empty(nv, dtype="int32")
-            intersect_ids.fill(rtcg.RTC_INVALID_GEOMETRY_ID)
+            intersect_ids.fill(INVALID_GEOMETRY_ID)
 
         cdef rtcr.RTCIntersectContext ray_ctx
         rtcr.rtcInitIntersectContext( &ray_ctx)
@@ -153,8 +155,8 @@ cdef class EmbreeScene:
                     else:
                         tfars[i] = ray_hit.ray.tfar
                 else:
-                    primID[i] = ray_hit.hit.primID
-                    geomID[i] = ray_hit.hit.geomID
+                    primID[i] = <int32_t>ray_hit.hit.primID
+                    geomID[i] = <int32_t>ray_hit.hit.geomID
                     u[i] = ray_hit.hit.u
                     v[i] = ray_hit.hit.v
                     tfars[i] = ray_hit.ray.tfar
@@ -164,7 +166,7 @@ cdef class EmbreeScene:
                     Ng[i, 2] = ray_hit.hit.Ng_z
             else:
                 rtcOccluded1(self.scene_i, &ray_ctx, &(ray_hit.ray))
-                intersect_ids[i] = ray_hit.hit.geomID
+                intersect_ids[i] = <int32_t>ray_hit.hit.geomID
 
         if do_dict_return:
             return {'u':u, 'v':v, 'Ng': Ng, 'tfar': tfars, 'primID': primID, 'geomID': geomID}

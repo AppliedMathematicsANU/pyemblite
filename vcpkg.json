@@ -1,0 +1,6 @@
+{
+    "dependencies": [
+        "tbb",
+        "embree3"
+    ]
+}
