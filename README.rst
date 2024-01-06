@@ -59,23 +59,26 @@ Example::
 Installation
 ============
 
-Install from latest github source::
-
-  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
-  python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite
-
-or from source directory::
-
-  python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
-  git clone git@github.com:AppliedMathematicsANU/pyemblite.git
-  cd pyemblite
-  python -m pip install --no-deps --no-build-isolation --user .
-
-If you're on windows, you can use
- `vcpkg <https://github.com/microsoft/vcpkg>`_ to manage non-python dependencies
-(can also be used on Linux and MacOS):
+Install from latest github source:
 
 .. code-block:: console
+   $ python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
+   $ python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite
+
+or from source directory:
+
+.. code-block:: console
+
+   $ python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
+   $ git clone git@github.com:AppliedMathematicsANU/pyemblite.git
+   $ cd pyemblite
+   $ python -m pip install --no-deps --no-build-isolation --user .
+
+
+If you're on windows, you can use `vcpkg <https://github.com/microsoft/vcpkg>`_ to
+manage non-python dependencies (can also be used on Linux and MacOS):
+
+.. code-block:: powershell
 
    PS > git clone https://github.com/microsoft/vcpkg
    PS > .\vcpkg\bootstrap-vcpkg.bat
@@ -83,6 +86,7 @@ If you're on windows, you can use
    PS > git clone git@github.com:Shane-J-Latham/pcsr.git
    PS > cd pcsr
    PS > python -m pip install --prefix=\path\to\install\root .
+
 
 You also still need to have build tools installed (some kind of C/C++ compiler).
 One way to achieve this is to install Visual Studio Build tools. Visual studio
