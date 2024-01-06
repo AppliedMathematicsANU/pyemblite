@@ -56,7 +56,6 @@ jobs:
 
       - name: Free disk space
         shell: bash
-        if: ${{}}
         run: |
           if [ "${RUNNER_OS}" == "Linux" ]; then
             df -h
