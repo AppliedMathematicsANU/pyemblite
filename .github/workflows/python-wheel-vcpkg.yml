@@ -113,6 +113,7 @@ jobs:
 
       - uses: lukka/get-cmake@latest
         name: Install cmake and ninja (via get-cmake)
+        if: runner.os != 'Linux'
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
         uses: lukka/run-vcpkg@v11
