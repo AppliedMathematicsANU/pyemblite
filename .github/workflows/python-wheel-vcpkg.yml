@@ -90,7 +90,7 @@ jobs:
           # Don't repair macOS wheels
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_WINDOWS: "python -m pip install cmake"
-          CIBW_BEFORE_BUILD_LINUX: "df -h && du -sh ${VCPKG_ROOT}/*"
+          CIBW_BEFORE_BUILD_LINUX: "df -h"
           CIBW_BEFORE_ALL_LINUX: "/usr/bin/yum install --assumeyes --verbose zip unzip tar cmake"
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux_2_28"
           # Run the package tests using `pytest`
