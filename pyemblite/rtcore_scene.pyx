@@ -1,6 +1,8 @@
 cimport cython
 cimport numpy as np
 from libcpp cimport bool
+from libcpp.vector cimport vector
+from libcpp.unordered_set cimport unordered_set
 from numpy cimport int32_t
 import numpy as np
 import logging
@@ -22,6 +24,15 @@ cdef void error_printer(void *userPtr, rtc.RTCError code, const char *_str) noex
     log.error("ERROR CAUGHT IN EMBREE")
     rtc.print_error(code)
     log.error("ERROR MESSAGE: %s" % _str)
+
+
+cdef packed struct hit_struct:
+    # The struct needs to be packed since by default numpy dtypes aren't
+    # aligned
+    np.int32_t geomID
+    np.int32_t primID
+    np.int32_t rayIDX
+    np.float32_t tfar
 
 
 cdef class EmbreeScene:
@@ -175,6 +186,91 @@ cdef class EmbreeScene:
                 return tfars
             else:
                 return intersect_ids
+
+    @cython.boundscheck(False) # turn off bounds-checking for entire function
+    @cython.wraparound(False)  # turn off negative index wrapping for entire function
+    def multi_hit_intersect_first_gid(
+        self,
+        np.ndarray[np.float32_t, ndim=2] vec_origins,
+        np.ndarray[np.float32_t, ndim=2] vec_directions,
+        float eps=1.0e-5
+    ):
+        """
+        For each ray, returns the first hit of every geometry.
+        """
+        if self.is_committed == 0:
+            # print("Committing scene...")
+            rtcCommitScene(self.scene_i)
+            self.is_committed = 1
+
+        cdef int nv = vec_origins.shape[0]
+
+        dtyp = [
+            ("geomID", np.int32),
+            ("primID", np.int32),
+            ("rayIDX", np.int32),
+            ("tfar", np.float32)
+        ]
+
+        cdef vector[hit_struct] hit_stlvec
+        cdef hit_struct hit
+        hit_stlvec.reserve(max((16, nv)))
+
+        cdef rtcr.RTCIntersectContext ray_ctx
+        rtcr.rtcInitIntersectContext( &ray_ctx)
+
+        cdef rtcr.RTCRayHit ray_hit
+
+        cdef have_hit
+        cdef float tnear
+        cdef unordered_set[int32_t] gid_set
+        for i in range(nv):
+            have_hit = True
+            tnear = 0.0
+            gid_set.clear()
+            while have_hit:
+                ray_hit.ray.org_x = vec_origins[i, 0]
+                ray_hit.ray.org_y = vec_origins[i, 1]
+                ray_hit.ray.org_z = vec_origins[i, 2]
+                ray_hit.ray.dir_x = vec_directions[i, 0]
+                ray_hit.ray.dir_y = vec_directions[i, 1]
+                ray_hit.ray.dir_z = vec_directions[i, 2]
+                ray_hit.ray.time = 0
+                ray_hit.ray.mask = -1
+                ray_hit.ray.flags = 0
+    
+                ray_hit.ray.tnear = tnear
+                ray_hit.ray.tfar = np.inf
+                ray_hit.ray.id = i
+                ray_hit.hit.geomID = rtcg.RTC_INVALID_GEOMETRY_ID
+                ray_hit.hit.primID = rtcg.RTC_INVALID_GEOMETRY_ID
+
+                rtcIntersect1(self.scene_i, &ray_ctx, &ray_hit)
+
+                if ray_hit.hit.geomID != rtcg.RTC_INVALID_GEOMETRY_ID:
+                    if gid_set.find(ray_hit.hit.geomID) == gid_set.end():
+                        gid_set.insert(ray_hit.hit.geomID)
+                        hit.geomID = <int32_t>ray_hit.hit.geomID
+                        hit.primID = <int32_t>ray_hit.hit.primID
+                        hit.rayIDX = <int32_t>i
+                        hit.tfar = ray_hit.ray.tfar
+                        hit_stlvec.push_back(hit)
+                    tnear = ray_hit.ray.tfar + eps
+                else:
+                    have_hit = False
+
+        have_any_hits = hit_stlvec.size() > 0;
+        if not have_any_hits:
+            hit_stlvec.push_back(hit)
+
+        cdef hit_struct[::1] arr = <hit_struct [:hit_stlvec.size()]>hit_stlvec.data()
+
+        if have_any_hits:
+            ret_ary = np.asarray(arr).copy()
+        else:
+            ret_ary = np.empty((0,), dtype=dtyp)
+
+        return ret_ary
 
     def __dealloc__(self):
         rtcReleaseScene(self.scene_i)

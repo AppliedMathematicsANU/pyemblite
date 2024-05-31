@@ -185,6 +185,10 @@ cdef class TriangleMesh:
         rtcg.rtcUpdateGeometryBuffer(self.mesh, rtcb.RTC_BUFFER_TYPE_VERTEX, 0);
         rtcg.rtcCommitGeometry(self.mesh);
 
+    @property
+    def mesh_id(self):
+        return self.meshID
+
     def __dealloc__(self):
         rtcg.rtcReleaseGeometry(self.mesh)
 

@@ -1,12 +1,19 @@
 """
 Unit tests.
 """
+import unittest
 from unittest import TestCase
 import numpy as np
 from pyemblite import rtcore as rtc
 from pyemblite import rtcore_scene as rtcs
 from pyemblite import test_scene as rtcts
 from pyemblite.mesh_construction import TriangleMesh
+have_trimesh = False
+try:
+    import trimesh
+    have_trimesh = True
+except Exception:
+    have_trimesh = False
 
 
 def xplane(x):
@@ -261,6 +268,58 @@ class TestIntersectionTrianglesFromIndices(TestCase):
         self.assertTrue(np.allclose([6.9, 6.9, 6.9], tfar))
         self.assertTrue(np.allclose([0.4, 0.1, 0.15], u))
         self.assertTrue(np.allclose([0.5, 0.4, 0.35], v))
+
+
+class TestMultiIntersection(TestCase):
+
+    def setUp(self):
+        """Initialisation"""
+
+        bnds = np.asarray([[-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]], dtype=np.float32)
+        self.offsets = np.linspace(4.0, 32.0, 8)
+        boxes = list(
+            trimesh.primitives.Box(bounds=bnds + [0.0, 0.0, offset])
+            for offset in self.offsets
+        )
+        self.embreeDevice = rtc.EmbreeDevice()
+        self.scene = rtcs.EmbreeScene(self.embreeDevice)
+        self.box_meshes = list(
+            TriangleMesh(
+                self.scene,
+                np.asarray(box.vertices).astype(dtype=np.float32),
+                np.asarray(box.faces).astype(np.int32)
+            )
+            for box in boxes
+        )
+
+    @unittest.skipUnless(have_trimesh, "Can't import trimesh.")
+    def test_multi_hit_intersect_first_gid(self):
+        """
+        """
+        origins = np.asarray([[0.0, 0.0, 0.0], ], dtype=np.float32)
+        dirs = np.asarray([[1.0, 0.0, 0.0], ], dtype=np.float32)
+
+        hits = self.scene.multi_hit_intersect_first_gid(vec_origins=origins, vec_directions=dirs)
+        self.assertEqual(0, hits.shape[0])
+
+        dirs = np.asarray([[0.0, 0.0, 1.0], ], dtype=np.float32)
+        hits = self.scene.multi_hit_intersect_first_gid(vec_origins=origins, vec_directions=dirs)
+        self.assertEqual(8, hits.shape[0])
+        for idx, offset in enumerate(self.offsets):
+            self.assertAlmostEqual(offset - 1.0, hits["tfar"][idx], 5)
+            self.assertEqual(self.box_meshes[idx].mesh_id, hits["geomID"][idx])
+            self.assertEqual(0, hits["rayIDX"][idx])
+        self.assertEqual(len(self.box_meshes), len(np.unique(hits["geomID"])))
+
+        origins = np.asarray([[0.5, 0.5, 0.0], [-0.5, -0.5, 0.0]], dtype=np.float32)
+        dirs = np.asarray([[0.0, 0.0, 1.0], [0.0, 0.0, 1.0]], dtype=np.float32)
+        hits = self.scene.multi_hit_intersect_first_gid(vec_origins=origins, vec_directions=dirs)
+        self.assertEqual(16, hits.shape[0])
+        for hits in [hits[hits["rayIDX"] == 0], hits[hits["rayIDX"] == 1]]:
+            for idx, offset in enumerate(self.offsets):
+                self.assertAlmostEqual(offset - 1.0, hits["tfar"][idx], 5)
+                self.assertEqual(self.box_meshes[idx].mesh_id, hits["geomID"][idx])
+        self.assertEqual(len(self.box_meshes), len(np.unique(hits["geomID"])))
 
 
 def initialise_loggers(names, log_level=None, handler_class=None):
