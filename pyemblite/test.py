@@ -275,12 +275,14 @@ class TestMultiIntersection(TestCase):
     def setUp(self):
         """Initialisation"""
 
-        bnds = np.asarray([[-1.0, -1.0, -1.0], [1.0, 1.0, 1.0]], dtype=np.float32)
         self.offsets = np.linspace(4.0, 32.0, 8)
         boxes = list(
-            trimesh.primitives.Box(bounds=bnds + [0.0, 0.0, offset])
+            trimesh.primitives.Box(extents=[2.0, 2.0, 2.0])
             for offset in self.offsets
         )
+        for box, offset in zip(boxes, self.offsets):
+            box.apply_translation([0.0, 0.0, offset])
+
         self.embreeDevice = rtc.EmbreeDevice()
         self.scene = rtcs.EmbreeScene(self.embreeDevice)
         self.box_meshes = list(
