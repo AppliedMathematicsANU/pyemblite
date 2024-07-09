@@ -1,4 +1,4 @@
-from adios2.bp5dbg import idxtable
+
 cimport cython
 cimport numpy as np
 from libcpp cimport bool
