@@ -324,6 +324,68 @@ class TestMultiIntersection(TestCase):
         self.assertEqual(len(self.box_meshes), len(np.unique(hits["geomID"])))
 
 
+class TestIntersectionCount(TestCase):
+
+    def setUp(self):
+        """Initialisation"""
+        import logging
+
+        self.logger = logging.getLogger(__name__ + "." + self.__class__.__name__)
+
+        self.embreeDevice = rtc.EmbreeDevice()
+        self.scene = rtcs.EmbreeScene(self.embreeDevice)
+        self.trimesh_sphere = \
+            trimesh.primitives.Sphere(center=(0.0, 0.0, 0.0), radius=2.0, subdivisions=4)
+        self.sphere_triangle_mesh = \
+            TriangleMesh(self.scene, self.trimesh_sphere.vertices, self.trimesh_sphere.faces)
+
+    @unittest.skipUnless(have_trimesh, "Can't import trimesh.")
+    def test_first_hit_intersect_pid_count(self):
+        """
+        """
+        self.logger.info("sphere num faces = %s", self.trimesh_sphere.faces.shape[0])
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        origins = np.zeros_like(directions)
+        counts_dict = self.scene.first_hit_intersect_pid_count(origins, directions)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(self.trimesh_sphere.faces.shape[0], counts_dict[0].shape[0])
+        self.assertTrue(np.all(counts_dict[0][:, 1] == 1))
+
+        sgl_idxs = np.arange(1, self.trimesh_sphere.faces.shape[0], 2)
+        self.logger.info("sgl_idxs.shape[0] = %s", sgl_idxs.shape[0])
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        directions = directions[sgl_idxs].copy()
+        origins = np.zeros_like(directions)
+        counts_dict = self.scene.first_hit_intersect_pid_count(origins, directions)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(sgl_idxs.shape[0], counts_dict[0].shape[0])
+        self.assertSequenceEqual(
+            sorted(sgl_idxs.tolist()),
+            sorted(counts_dict[0][:, 0].tolist())
+        )
+        self.assertTrue(np.all(counts_dict[0][:, 1] == 1))
+
+        dbl_idxs = np.arange(0, self.trimesh_sphere.faces.shape[0], 2)
+        sgl_idxs = np.arange(1, self.trimesh_sphere.faces.shape[0], 2)
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        directions = np.vstack((directions, directions[dbl_idxs]))
+        origins = np.zeros_like(directions)
+        counts_dict = self.scene.first_hit_intersect_pid_count(origins, directions)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(self.trimesh_sphere.faces.shape[0], counts_dict[0].shape[0])
+        counts_ary = counts_dict[0]
+        sort_idx = np.argsort(counts_ary[:, 0])
+        counts_ary = counts_ary[sort_idx].copy()
+        self.assertTrue(np.all(counts_ary[sgl_idxs][:, 1] == 1))
+        self.assertTrue(np.all(counts_ary[dbl_idxs][:, 1] == 2))
+
+
 def initialise_loggers(names, log_level=None, handler_class=None):
     """
     Initialises specified loggers to generate output at the

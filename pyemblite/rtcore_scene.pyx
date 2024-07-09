@@ -1,8 +1,10 @@
+from adios2.bp5dbg import idxtable
 cimport cython
 cimport numpy as np
 from libcpp cimport bool
 from libcpp.vector cimport vector
 from libcpp.unordered_set cimport unordered_set
+from libcpp.unordered_map cimport unordered_map
 from numpy cimport int32_t
 import numpy as np
 import logging
@@ -221,7 +223,7 @@ cdef class EmbreeScene:
 
         cdef rtcr.RTCRayHit ray_hit
 
-        cdef have_hit
+        cdef bool have_hit
         cdef float tnear
         cdef unordered_set[int32_t] gid_set
         for i in range(nv):
@@ -271,6 +273,76 @@ cdef class EmbreeScene:
             ret_ary = np.empty((0,), dtype=dtyp)
 
         return ret_ary
+
+    @cython.boundscheck(False) # turn off bounds-checking for entire function
+    @cython.wraparound(False)  # turn off negative index wrapping for entire function
+    def first_hit_intersect_pid_count(
+        self,
+        np.ndarray[np.float32_t, ndim=2] vec_origins,
+        np.ndarray[np.float32_t, ndim=2] vec_directions
+    ):
+        """
+        Records number of hits for each (GID, PID) in a scene.
+        Returns a :obj:`dict` of :samp:`(GID, PID_counts_ary)` where :samp:`GID` is
+        the *geometry ID* integer and :samp:`PID_counts_ary` is a :samp:`(N, 2)`
+        shaped :obj:`numpy.ndarray` of :samp:`(PID, hit_count)` pairs (where :samp:`PID`
+        is the *primitive ID* integer and :samp:`hit_count` is the integer number of ray
+        hits recorded for the :samp:`PID` primitive).
+        """
+        if self.is_committed == 0:
+            # print("Committing scene...")
+            rtcCommitScene(self.scene_i)
+            self.is_committed = 1
+
+        cdef int nv = vec_origins.shape[0]
+
+        cdef rtcr.RTCIntersectContext ray_ctx
+        rtcr.rtcInitIntersectContext( &ray_ctx)
+
+        cdef rtcr.RTCRayHit ray_hit
+
+        cdef float tnear
+        cdef unordered_map[int32_t,unordered_map[int32_t,int32_t]] hit_counts_map
+        for i in range(nv):
+            ray_hit.ray.org_x = vec_origins[i, 0]
+            ray_hit.ray.org_y = vec_origins[i, 1]
+            ray_hit.ray.org_z = vec_origins[i, 2]
+            ray_hit.ray.dir_x = vec_directions[i, 0]
+            ray_hit.ray.dir_y = vec_directions[i, 1]
+            ray_hit.ray.dir_z = vec_directions[i, 2]
+            ray_hit.ray.time = 0
+            ray_hit.ray.mask = -1
+            ray_hit.ray.flags = 0
+
+            ray_hit.ray.tnear = 0.0
+            ray_hit.ray.tfar = np.inf
+            ray_hit.ray.id = i
+            ray_hit.hit.geomID = rtcg.RTC_INVALID_GEOMETRY_ID
+            ray_hit.hit.primID = rtcg.RTC_INVALID_GEOMETRY_ID
+
+            rtcIntersect1(self.scene_i, &ray_ctx, &ray_hit)
+
+            if ray_hit.hit.geomID != rtcg.RTC_INVALID_GEOMETRY_ID:
+                if hit_counts_map.find(ray_hit.hit.geomID) == hit_counts_map.end():
+                    hit_counts_map[ray_hit.hit.geomID] = unordered_map[int32_t,int32_t]()
+                if hit_counts_map[ray_hit.hit.geomID].find(ray_hit.hit.primID) == hit_counts_map[ray_hit.hit.geomID].end():
+                    hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID] = 0
+                hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID] += 1
+
+        ret_dict = {}
+        cdef np.ndarray[np.int32_t, ndim=2] primID_counts
+        cdef int32_t ary_idx
+        for gid_it in hit_counts_map:
+            num_primID = gid_it.second.size()
+            primID_counts = np.empty((num_primID, 2), dtype=np.int32)
+            ary_idx = 0
+            for pid_it in hit_counts_map[gid_it.first]:
+                primID_counts[ary_idx, 0] = pid_it.first
+                primID_counts[ary_idx, 1] = pid_it.second
+                ary_idx += 1
+            ret_dict[gid_it.first] = primID_counts.copy()
+
+        return ret_dict
 
     def __dealloc__(self):
         rtcReleaseScene(self.scene_i)
