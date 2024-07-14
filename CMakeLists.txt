@@ -37,6 +37,9 @@ else()
 endif()
 
 enable_language(CXX)
+if (NOT CXX_STANDARD)
+  set(CXX_STANDARD C++11)
+endif()
 
 MESSAGE(STATUS "Finding Python...")
 FIND_PACKAGE(Python COMPONENTS Interpreter Development.Module REQUIRED)
@@ -78,7 +81,7 @@ IF (DEFINED VCPKG_INSTALLED_DIR)
 ENDIF()
 
 foreach (cymod rtcore rtcore_scene mesh_construction test_scene)
-  add_cython_target(${cymod} pyemblite/${cymod}.pyx)
+  add_cython_target(${cymod} pyemblite/${cymod}.pyx CXX PY3)
   add_library(${cymod} MODULE ${cymod})
   PYTHON_EXTENSION_MODULE(${cymod})
   target_link_libraries(${cymod} embree)
