@@ -86,8 +86,8 @@ manage non-python dependencies (can also be used on Linux and MacOS):
    PS > git clone https://github.com/microsoft/vcpkg
    PS > .\vcpkg\bootstrap-vcpkg.bat
    PS > $Env:VCPKG_ROOT=$(Resolve-Path ./vcpkg)
-   PS > git clone git@github.com:Shane-J-Latham/pcsr.git
-   PS > cd pcsr
+   PS > git clone git@github.com/AppliedMathematicsANU/pyemblite.git
+   PS > cd pyemblite
    PS > python -m pip install --prefix=\path\to\install\root .
 
 
@@ -106,7 +106,7 @@ Requires:
 
 - python-3 version `>= 3.4`,
 - `numpy <http://www.numpy.org/>`_ version `>= 1.7`,
-- `embree <https://embree.github.io>`_ `>= 3.0` (`Latest release <https://github.com/embree/embree/releases/latest>`_)
+- `embree <https://embree.github.io>`_ `>= 3.0 < 4.0` (`Latest release <https://github.com/embree/embree/releases/latest>`_)
 
 
 Testing
