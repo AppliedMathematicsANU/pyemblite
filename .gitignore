@@ -2,6 +2,7 @@
 .pydevproject
 build
 _skbuild
+wheels
 dist
 pyemblite.egg-info
 pyemblite/*.c
