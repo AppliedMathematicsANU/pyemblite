@@ -82,6 +82,7 @@ Installation
 Install from latest github source:
 
 .. code-block:: console
+
    $ python -m pip install --user setuptools cython wheel numpy 'versioneer[toml]'
    $ python -m pip install --no-deps --no-build-isolation --user git+https://github.com/AppliedMathematicsANU/pyemblite.git#egg=pyemblite
 
@@ -130,6 +131,8 @@ Testing
 =======
 
 Run tests (unit-tests and doctest module docstring tests) using::
+
+.. code-block:: console
 
    python -m pyemblite.test
 
