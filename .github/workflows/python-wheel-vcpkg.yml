@@ -143,7 +143,7 @@ jobs:
           python -m pip install "Cython" "numpy" "wheel" "setuptools>=42" "versioneer[toml]" "scikit-build" "cmake" "ninja"
 
       - name: Create python sdist
-        run: python setup.py sdist --formats=gztar,zip
+        run: python setup.py sdist --formats=zip
 
       - name: Upload python sdist
         uses: actions/upload-artifact@v4
@@ -166,6 +166,28 @@ jobs:
           merge-multiple: true
 
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ./release_artifacts/*
+
+  publish:
+    name: Upload release to PyPI
+    needs: [build_sdist, build_wheels]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/pyemblite
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
+    steps:
+      - name: Download python sdist and wheels
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cibw-*
+          path: ./release_artifacts/
+          merge-multiple: true
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: ./release_artifacts/
