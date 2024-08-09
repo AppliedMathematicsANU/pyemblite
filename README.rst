@@ -130,11 +130,18 @@ Requires:
 Testing
 =======
 
-Run tests (unit-tests and doctest module docstring tests) using::
+Run tests (unit-tests and doctest module docstring tests) using:
 
 .. code-block:: console
 
-   python -m pyemblite.test
+   $ python -m pyemblite.test
+
+or with *fail-fast* and *verbosity*:
+
+.. code-block:: console
+
+   $ python -m pyemblite.test -fv
+
 
 
 Latest source code
