@@ -4,6 +4,23 @@
 ===========
 
 .. start long description.
+.. start badges.
+
+.. image:: https://img.shields.io/pypi/v/pyemblite.svg
+   :target: https://pypi.python.org/pypi/pyemblite/
+   :alt: pyemblite python package
+.. image:: https://github.com/AppliedMathematicsANU/pyemblite/actions/workflows/python-test.yml/badge.svg
+   :target: https://github.com/AppliedMathematicsANU/pyemblite/actions/workflows/python-test.yml
+   :alt: pyemblite python package
+.. image:: https://github.com/AppliedMathematicsANU/pyemblite/actions/workflows/python-test-vcpkg.yml/badge.svg
+   :target: https://github.com/AppliedMathematicsANU/pyemblite/actions/workflows/python-test-vcpkg.yml
+   :alt: pyemblite python package
+.. image:: https://img.shields.io/pypi/l/pyemblite.svg
+   :target: https://pypi.python.org/pypi/pyemblite/
+   :alt: BSD License
+.. image:: https://img.shields.io/pypi/pyversions/pyemblite.svg
+   :target: https://pypi.python.org/pypi/pyemblite/
+   :alt: pyemblite python package
 
 Python wrapper for Embree-3. Source code adapted from
 `pyembree <https://github.com/scopatz/pyembree>`_ Embree-2 wrapper.
