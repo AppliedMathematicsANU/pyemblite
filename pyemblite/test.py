@@ -340,6 +340,69 @@ class TestIntersectionCount(TestCase):
             TriangleMesh(self.scene, self.trimesh_sphere.vertices, self.trimesh_sphere.faces)
 
     @unittest.skipUnless(have_trimesh, "Can't import trimesh.")
+    def test_first_hit_intersect_pid_count_with_weight(self):
+        """
+        """
+        self.logger.info("sphere num faces = %s", self.trimesh_sphere.faces.shape[0])
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        origins = np.zeros_like(directions)
+        weights = np.ones_like(origins, shape=(origins.shape[0], ))
+        counts_dict = \
+            self.scene.first_hit_intersect_pid_count_with_weight(origins, directions, weights)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(self.trimesh_sphere.faces.shape[0], counts_dict[0].shape[0])
+        self.assertTrue("primID" in counts_dict[0].dtype.names)
+        self.assertTrue("count" in counts_dict[0].dtype.names)
+        self.assertTrue("weight" in counts_dict[0].dtype.names)
+        self.assertTrue(
+            np.all(
+                np.sort(counts_dict[0]["primID"]) == np.arange(self.trimesh_sphere.faces.shape[0])
+            )
+        )
+        self.assertTrue(np.all(counts_dict[0]["count"] == 1))
+        self.assertTrue(np.all(counts_dict[0]["weight"] == 1))
+
+        sgl_idxs = np.arange(1, self.trimesh_sphere.faces.shape[0], 2)
+        self.logger.info("sgl_idxs.shape[0] = %s", sgl_idxs.shape[0])
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        directions = directions[sgl_idxs].copy()
+        origins = np.zeros_like(directions)
+        weights = np.ones((origins.shape[0], ), dtype=np.float32)
+        counts_dict = \
+            self.scene.first_hit_intersect_pid_count_with_weight(origins, directions, weights)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(sgl_idxs.shape[0], counts_dict[0].shape[0])
+        self.assertSequenceEqual(
+            sorted(sgl_idxs.tolist()),
+            sorted(counts_dict[0]["primID"].tolist())
+        )
+        self.assertTrue(np.all(counts_dict[0]["count"] == 1))
+        self.assertTrue(np.all(counts_dict[0]["weight"] == 1))
+
+        dbl_idxs = np.arange(0, self.trimesh_sphere.faces.shape[0], 2)
+        sgl_idxs = np.arange(1, self.trimesh_sphere.faces.shape[0], 2)
+        directions = np.asarray(self.trimesh_sphere.triangles_center, dtype=np.float32).copy()
+        directions /= np.linalg.norm(directions, axis=1).reshape((-1, 1))
+        directions = np.vstack((directions, directions[dbl_idxs]))
+        origins = np.zeros_like(directions)
+        weights = np.ones((origins.shape[0], ), dtype=np.float32)
+        counts_dict = \
+            self.scene.first_hit_intersect_pid_count_with_weight(origins, directions, weights)
+        self.assertEqual(1, len(counts_dict))
+        self.assertTrue(0 in counts_dict)
+        self.assertEqual(self.trimesh_sphere.faces.shape[0], counts_dict[0].shape[0])
+        counts_ary = counts_dict[0]
+        sort_idx = np.argsort(counts_ary["primID"])
+        counts_ary = counts_ary[sort_idx].copy()
+        self.assertTrue(np.all(counts_ary[sgl_idxs]["count"] == 1))
+        self.assertTrue(np.all(counts_ary[dbl_idxs]["count"] == 2))
+        self.assertTrue(np.all(counts_ary["count"] == counts_ary["weight"]))
+
+    @unittest.skipUnless(have_trimesh, "Can't import trimesh.")
     def test_first_hit_intersect_pid_count(self):
         """
         """

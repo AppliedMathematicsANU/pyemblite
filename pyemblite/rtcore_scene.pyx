@@ -3,6 +3,7 @@ cimport cython
 cimport numpy as np
 from libcpp cimport bool
 from libcpp.vector cimport vector
+from libcpp.utility cimport pair
 from libcpp.unordered_set cimport unordered_set
 from libcpp.unordered_map cimport unordered_map
 from numpy cimport int32_t
@@ -36,6 +37,12 @@ cdef packed struct hit_struct:
     np.int32_t rayIDX
     np.float32_t tfar
 
+cdef packed struct hit_count_struct:
+    # The struct needs to be packed since by default numpy dtypes aren't
+    # aligned
+    np.int32_t primID
+    np.int32_t count
+    np.float32_t weight
 
 cdef class EmbreeScene:
     def __init__(self, rtc.EmbreeDevice device=None):
@@ -240,7 +247,7 @@ cdef class EmbreeScene:
                 ray_hit.ray.time = 0
                 ray_hit.ray.mask = -1
                 ray_hit.ray.flags = 0
-    
+
                 ray_hit.ray.tnear = tnear
                 ray_hit.ray.tfar = np.inf
                 ray_hit.ray.id = i
@@ -276,18 +283,21 @@ cdef class EmbreeScene:
 
     @cython.boundscheck(False) # turn off bounds-checking for entire function
     @cython.wraparound(False)  # turn off negative index wrapping for entire function
-    def first_hit_intersect_pid_count(
+    def first_hit_intersect_pid_count_with_weight(
         self,
         np.ndarray[np.float32_t, ndim=2] vec_origins,
-        np.ndarray[np.float32_t, ndim=2] vec_directions
+        np.ndarray[np.float32_t, ndim=2] vec_directions,
+        np.ndarray[np.float32_t, ndim=1] vec_weights
     ):
         """
-        Records number of hits for each (GID, PID) in a scene.
-        Returns a :obj:`dict` of :samp:`(GID, PID_counts_ary)` where :samp:`GID` is
-        the *geometry ID* integer and :samp:`PID_counts_ary` is a :samp:`(N, 2)`
-        shaped :obj:`numpy.ndarray` of :samp:`(PID, hit_count)` pairs (where :samp:`PID`
-        is the *primitive ID* integer and :samp:`hit_count` is the integer number of ray
-        hits recorded for the :samp:`PID` primitive).
+        Records number of hits and sum-of-weights for each (GID, PID) in a scene.
+        Returns a :obj:`dict` of :samp:`(GID, PID_counts_ary)`
+        where :samp:`GID` is
+        the *geometry ID* integer and :samp:`PID_counts_ary` is a :mod:`numpy`
+        structured array with fields: :samp:`"primID"`, :samp:`"count"` and :samp:`"weight".
+        The :samp:`"count"` field is the number of rays which hit the
+        corresponding :samp:`"primID"` and the :samp:`"weight"` field is the sum of ray-weights
+        which hit the corresponding :samp:`"primID"`.
         """
         if self.is_committed == 0:
             # print("Committing scene...")
@@ -302,7 +312,7 @@ cdef class EmbreeScene:
         cdef rtcr.RTCRayHit ray_hit
 
         cdef float tnear
-        cdef unordered_map[int32_t,unordered_map[int32_t,int32_t]] hit_counts_map
+        cdef unordered_map[int32_t,unordered_map[int32_t,hit_count_struct]] hit_counts_map
         for i in range(nv):
             ray_hit.ray.org_x = vec_origins[i, 0]
             ray_hit.ray.org_y = vec_origins[i, 1]
@@ -324,23 +334,56 @@ cdef class EmbreeScene:
 
             if ray_hit.hit.geomID != rtcg.RTC_INVALID_GEOMETRY_ID:
                 if hit_counts_map.find(ray_hit.hit.geomID) == hit_counts_map.end():
-                    hit_counts_map[ray_hit.hit.geomID] = unordered_map[int32_t,int32_t]()
+                    hit_counts_map[ray_hit.hit.geomID] = unordered_map[int32_t,hit_count_struct]()
                 if hit_counts_map[ray_hit.hit.geomID].find(ray_hit.hit.primID) == hit_counts_map[ray_hit.hit.geomID].end():
-                    hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID] = 0
-                hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID] += 1
+                    hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID].primID = ray_hit.hit.primID
+                    hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID].count = 0
+                    hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID].weight = 0.0
+                hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID].count += 1
+                hit_counts_map[ray_hit.hit.geomID][ray_hit.hit.primID].weight += vec_weights[i]
 
         ret_dict = {}
-        cdef np.ndarray[np.int32_t, ndim=2] primID_counts
+        cdef vector[hit_count_struct] hit_count_stlvec
+        cdef hit_count_struct[::1] hit_count_arr
+
         cdef int32_t ary_idx
         for gid_it in hit_counts_map:
-            num_primID = gid_it.second.size()
-            primID_counts = np.empty((num_primID, 2), dtype=np.int32)
-            ary_idx = 0
+            hit_count_stlvec.clear()
             for pid_it in hit_counts_map[gid_it.first]:
-                primID_counts[ary_idx, 0] = pid_it.first
-                primID_counts[ary_idx, 1] = pid_it.second
-                ary_idx += 1
-            ret_dict[gid_it.first] = primID_counts.copy()
+                hit_count_stlvec.push_back(pid_it.second)
+
+            hit_count_arr = <hit_count_struct [:hit_count_stlvec.size()]>hit_count_stlvec.data()
+            ret_dict[gid_it.first] = np.asarray(hit_count_arr).copy()
+
+        return ret_dict
+
+    @cython.boundscheck(False) # turn off bounds-checking for entire function
+    @cython.wraparound(False)  # turn off negative index wrapping for entire function
+    def first_hit_intersect_pid_count(
+        self,
+        np.ndarray[np.float32_t, ndim=2] vec_origins,
+        np.ndarray[np.float32_t, ndim=2] vec_directions
+    ):
+        """
+        Records number of hits for each (GID, PID) in a scene.
+        Returns a :obj:`dict` of :samp:`(GID, PID_counts_ary)` where :samp:`GID` is
+        the *geometry ID* integer and :samp:`PID_counts_ary` is a :samp:`(N, 2)`
+        shaped :obj:`numpy.ndarray` of :samp:`(PID, hit_count)` pairs (where :samp:`PID`
+        is the *primitive ID* integer and :samp:`hit_count` is the integer number of ray
+        hits recorded for the :samp:`PID` primitive).
+        """
+        cdef np.ndarray[np.float32_t, ndim=1] vec_weights
+        vec_weights = np.zeros((vec_directions.shape[0], ), dtype=np.float32)
+        w_dict = \
+            self.first_hit_intersect_pid_count_with_weight(
+                vec_origins,
+                vec_directions,
+                vec_weights
+            )
+        ret_dict = {}
+        for item in w_dict.items():
+            cnt_and_wght_ary = item[1]
+            ret_dict[item[0]] = np.asarray([cnt_and_wght_ary["primID"], cnt_and_wght_ary["count"]]).T.copy()
 
         return ret_dict
 
