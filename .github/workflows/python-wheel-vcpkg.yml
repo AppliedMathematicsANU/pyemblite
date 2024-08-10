@@ -93,6 +93,7 @@ jobs:
           CIBW_BEFORE_BUILD_LINUX: "if [[ -e /project/_skbuild ]]; then rm -rf /project/_skbuild; fi; df -h"
           CIBW_BEFORE_ALL_LINUX: "/usr/bin/yum install --assumeyes --verbose zip unzip tar cmake"
           CIBW_MANYLINUX_X86_64_IMAGE: "manylinux_2_28"
+          CIBW_BEFORE_TEST: "python -m pip install trimesh"
           # Run the package tests using `pytest`
           CIBW_TEST_COMMAND: "python -m pyemblite.test -fv"
 
