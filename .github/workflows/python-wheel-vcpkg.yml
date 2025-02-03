@@ -144,7 +144,7 @@ jobs:
           python -m pip install "Cython" "numpy" "wheel" "setuptools>=42" "versioneer[toml]" "scikit-build" "cmake" "ninja"
 
       - name: Create python sdist
-        run: python setup.py sdist --formats=zip
+        run: python setup.py sdist --formats=gztar
 
       - name: Upload python sdist
         uses: actions/upload-artifact@v4
