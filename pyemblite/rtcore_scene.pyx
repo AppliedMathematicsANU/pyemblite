@@ -616,3 +616,6 @@ cdef class EmbreeSceneExtended(object):
                 normal[i, 2] = f * ray_hit.hit.Ng_z
 
         return { 'primID': primID, 'normal': normal, 'loc': loc }
+
+# Expose enum members as global constants
+globals().update(getattr(RTCSceneFlags, "__members__"))

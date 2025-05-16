@@ -34,3 +34,6 @@ cdef class EmbreeDevice:
         return 'Embree version:  {0}.{1}.{2}'.format(RTC_VERSION_MAJOR,
                                                      RTC_VERSION_MINOR,
                                                      RTC_VERSION_PATCH)
+
+# Expose enum members as global constants
+globals().update(getattr(RTCBuildQuality, "__members__"))
