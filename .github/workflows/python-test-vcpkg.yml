@@ -39,12 +39,12 @@ jobs:
         shell: bash
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@latest
         with:
           # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
           vcpkgDirectory: '${{ runner.workspace }}/vcpkg'
           # The Git commit id of vcpkg to be checked out. This is only needed because we are not using a submodule.
-          vcpkgGitCommitId: "f7423ee180c4b7f40d43402c2feb3859161ef625"
+          vcpkgGitCommitId: "ce613c41372b23b1f51333815feb3edd87ef8a8b"
           # The vcpkg.json file, which will be part of cache key computation.
           vcpkgJsonGlob: '**/vcpkg.json'
         id: runvcpkg
