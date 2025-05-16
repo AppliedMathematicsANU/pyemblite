@@ -39,7 +39,7 @@ jobs:
         shell: bash
 
       - name: Restore artifacts, or setup vcpkg for building artifacts
-        uses: lukka/run-vcpkg@latest
+        uses: lukka/run-vcpkg@v11
         with:
           # This specifies the location of vcpkg, where it is going to be restored from cache, or create from scratch.
           vcpkgDirectory: '${{ runner.workspace }}/vcpkg'
