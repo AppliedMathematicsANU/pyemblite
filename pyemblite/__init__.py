@@ -1,5 +1,5 @@
 """
-Embree-3 python API.
+Embree python API.
 """
 from . import _version
 
