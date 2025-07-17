@@ -1,6 +1,6 @@
 
 MESSAGE(STATUS "Finding embree3...")
-find_package(embree 3 CONFIG REQUIRED)
+find_package(embree 3 CONFIG)
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/pyemblite/include)
 
 IF ( embree_FOUND )
