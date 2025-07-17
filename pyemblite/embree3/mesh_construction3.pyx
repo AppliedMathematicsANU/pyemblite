@@ -1,11 +1,11 @@
 cimport numpy as np
 cimport cython
-from . cimport rtcore as rtc
-from . cimport rtcore_buffer as rtcb
-from . cimport rtcore_ray as rtcr
-from . cimport rtcore_scene as rtcs
-from . cimport rtcore_geometry as rtcg
-from .rtcore cimport Vertex, Triangle
+from . cimport rtcore3 as rtc
+from . cimport rtcore_buffer3 as rtcb
+from . cimport rtcore_ray3 as rtcr
+from . cimport rtcore_scene3 as rtcs
+from . cimport rtcore_geometry3 as rtcg
+from .rtcore3 cimport Vertex, Triangle
 
 
 cdef extern from "mesh_construction.h":

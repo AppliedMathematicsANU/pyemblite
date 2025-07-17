@@ -74,4 +74,4 @@ IF (DEFINED VCPKG_INSTALLED_DIR)
 ENDIF()
 
 ADD_SUBDIRECTORY(pyemblite/embree3)
-
+ADD_SUBDIRECTORY(pyemblite/embree4)

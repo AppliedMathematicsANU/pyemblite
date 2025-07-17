@@ -16,14 +16,14 @@ def get_default_embree_version():
     default_version = None
     if (env_version is None) or (env_version == 4):
         try:
-            from .embree4 import rtcore, rtcore_scene, mesh_construction, test_scene  # noqa:
+            from .embree4 import rtcore4, rtcore_scene4, mesh_construction4, test_scene4  # noqa:
             default_version = 4
         except ImportError:
             pass
 
     if (default_version is None) and ((env_version is None) or (env_version == 3)):
         try:
-            from .embree3 import rtcore, rtcore_scene, mesh_construction, test_scene  # noqa:
+            from .embree3 import rtcore3, rtcore_scene3, mesh_construction3, test_scene3  # noqa:
             default_version = 3
         except ImportError:
             pass
@@ -31,11 +31,13 @@ def get_default_embree_version():
     if default_version is None:
         if env_version is None:
             raise RuntimeError(
-                "No embree API (e.g. rtcore) versions could be imported from .embree3 or .embree4"
+                "No embree API (e.g. rtcore?) versions could be imported from .embree3 or .embree4"
             )
         else:
             raise RuntimeError(
-                f"No embree API (e.g. rtcore) versions could be imported from .embree{env_version}."
+                f"No embree API (e.g. rtcore{env_version}) versions"
+                +
+                f" could be imported from .embree{env_version}."
             )
 
     return default_version
@@ -69,5 +71,7 @@ def do_embree_version_star_import(dst_module_name, embree_version=None):
     """
     if embree_version is None:
         embree_version = get_default_embree_version()
-    src_module_name = ".embree" + str(embree_version) + "." + dst_module_name.split(".")[-1]
+    src_module_name = (
+        ".embree" + str(embree_version) + "." + dst_module_name.split(".")[-1] + str(embree_version)
+    )
     do_api_star_import(src_module_name=src_module_name, dst_module_name=dst_module_name)

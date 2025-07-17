@@ -1,9 +1,9 @@
 # rtcore_geometry wrapper
 
-from .rtcore_ray cimport RTCIntersectContext, RTCRayN, RTCRayHitN
-from .rtcore cimport RTCDevice, RTCBuildQuality, RTCFormat
-from .rtcore_buffer cimport RTCBuffer
-from .rtcore_ray cimport RTCFilterFunctionN
+from .rtcore_ray3 cimport RTCIntersectContext, RTCRayN, RTCRayHitN
+from .rtcore3 cimport RTCDevice, RTCBuildQuality, RTCFormat
+from .rtcore_buffer3 cimport RTCBuffer
+from .rtcore_ray3 cimport RTCFilterFunctionN
 cimport cython
 cimport numpy as np
 
