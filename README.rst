@@ -79,10 +79,11 @@ Example:
 Runtime Selection of Embree-3 or Embree-4
 =========================================
 
-Use the `PYEMBLITE_EMBREE_MAJOR_VERSION` environment variable to control which version
-of the Embree API to use (when both versions are available):
+Use the ``PYEMBLITE_EMBREE_MAJOR_VERSION`` environment variable to control the
+runtime version Embree API (when both versions are available):
 
 .. code-block:: console
+
    $ PYEMBLITE_EMBREE_MAJOR_VERSION=3 python -c 'from pyemblite import rtcore as rtc; print(rtc.EmbreeDevice())'
    $ PYEMBLITE_EMBREE_MAJOR_VERSION=4 python -c 'from pyemblite import rtcore as rtc; print(rtc.EmbreeDevice())'
 
