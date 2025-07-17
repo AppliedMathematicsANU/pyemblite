@@ -40,7 +40,6 @@ cdef extern from "embree4/rtcore_scene.h":
         RTC_SCENE_FLAG_COMPACT
         RTC_SCENE_FLAG_ROBUST
         RTC_SCENE_FLAG_FILTER_FUNCTION_IN_ARGUMENTS
-        RTC_SCENE_FLAG_PREFETCH_USM_SHARED_ON_GPU
 
     cdef enum RTCAlgorithmFlags:
         RTC_INTERSECT1
