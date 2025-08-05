@@ -25,7 +25,8 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" == "macOS" ]; then
-            brew install autoconf automake libtool
+            # brew install autoconf automake libtool
+            echo "Skipping brew install of: autoconf automake libtool"
           fi
 
       - uses: lukka/get-cmake@latest
@@ -76,6 +77,8 @@ jobs:
           cd ~
           echo $(pwd)
           python -c 'import os; import pyemblite; print(os.listdir(os.path.dirname(pyemblite.__file__)))'
+          python -c 'import os; import pyemblite; print(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree3"))'
+          python -c 'import os; import pyemblite; print(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree4"))'
           python -c 'import pyemblite; print(f"pyemblite.__file__={pyemblite.__file__}"); print(dir(pyemblite))'
 
       - name: Test
