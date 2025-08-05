@@ -8,7 +8,7 @@
     {
       "kind": "git",
       "repository": "https://github.com/AppliedMathematicsANU/vcpkg-registry-embree",
-      "baseline": "498a34769c044f397c383c6a7a76063b09a75fe2",
+      "baseline": "d1399e814b8646653a5082eb46fbc5cf584bc202",
       "packages": [ "embree4" ]
     }
   ]
