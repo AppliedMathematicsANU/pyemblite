@@ -24,7 +24,7 @@ elseif(CMAKE_FETCH_VCPKG OR DEFINED ENV{CMAKE_FETCH_VCPKG})
   include(FetchContent)
   FetchContent_Declare(vcpkg
     GIT_REPOSITORY https://github.com/microsoft/vcpkg/
-    GIT_TAG 2023.12.12
+    GIT_TAG 2025.07.25
   )
   FetchContent_MakeAvailable(vcpkg)
   set(CMAKE_TOOLCHAIN_FILE
@@ -73,5 +73,9 @@ IF (DEFINED VCPKG_INSTALLED_DIR)
   )
 ENDIF()
 
-ADD_SUBDIRECTORY(pyemblite/embree3)
-ADD_SUBDIRECTORY(pyemblite/embree4)
+IF (DEFINED CMAKE_TOOLCHAIN_FILE)
+  ADD_SUBDIRECTORY(pyemblite/embree4)
+ELSE()
+  ADD_SUBDIRECTORY(pyemblite/embree3)
+  ADD_SUBDIRECTORY(pyemblite/embree4)
+ENDIF()
