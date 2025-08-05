@@ -76,10 +76,10 @@ jobs:
         run: |
           cd ~
           echo $(pwd)
-          python -c 'import os; import pyemblite; print(os.listdir(os.path.dirname(pyemblite.__file__)))'
-          python -c 'import os; import pyemblite; print(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree3"))'
-          python -c 'import os; import pyemblite; print(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree4"))'
-          python -c 'import pyemblite; print(f"pyemblite.__file__={pyemblite.__file__}"); print(dir(pyemblite))'
+          python -c 'import os; import pyemblite; print("pyemblite dir         = " + str(os.listdir(os.path.dirname(pyemblite.__file__))))'
+          python -c 'import os; import pyemblite; print("pyemblite.embree3 dir = " + str(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree3"))))'
+          python -c 'import os; import pyemblite; print("pyemblite.embree3 dir = " + str(os.listdir(os.path.join(os.path.dirname(pyemblite.__file__), "embree4"))))'
+          python -c 'import pyemblite; print(f"pyemblite.__file__={pyemblite.__file__}"); print(f"dir(pyemblite)={dir(pyemblite)}")'
 
       - name: Test
         shell: bash
