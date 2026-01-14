@@ -24,7 +24,7 @@ elseif(CMAKE_FETCH_VCPKG OR DEFINED ENV{CMAKE_FETCH_VCPKG})
   include(FetchContent)
   FetchContent_Declare(vcpkg
     GIT_REPOSITORY https://github.com/microsoft/vcpkg/
-    GIT_TAG 2025.07.25
+    GIT_TAG 2025.12.12
   )
   FetchContent_MakeAvailable(vcpkg)
   set(CMAKE_TOOLCHAIN_FILE
