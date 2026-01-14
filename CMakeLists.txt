@@ -31,6 +31,11 @@ elseif(CMAKE_FETCH_VCPKG OR DEFINED ENV{CMAKE_FETCH_VCPKG})
     "${vcpkg_SOURCE_DIR}/scripts/buildsystems/vcpkg.cmake"
     CACHE FILEPATH ""
   )
+  if (EXISTS "${vcpkg_SOURCE_DIR}/ports/vbs-enclave-tooling-codegen/portfile.cmake")
+    # Remove this file as it causes scikit-build check_for_bad_installs to fail.
+    file(REMOVE "${vcpkg_SOURCE_DIR}/ports/vbs-enclave-tooling-codegen/portfile.cmake")
+  endif()
+  message(STATUS "vcpkg_SOURCE_DIR=${vcpkg_SOURCE_DIR}")
   message(STATUS "Fetching vcpkg -- done")
 else()
   message(STATUS "No VCPKG_ROOT or CMAKE_TOOLCHAIN_FILE defined, skipping vcpkg use.")
