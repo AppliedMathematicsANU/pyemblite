@@ -91,6 +91,12 @@ runtime version Embree API (when both versions are available):
 Installation
 ============
 
+Install from pypi:
+
+.. code-block:: console
+
+   $ python -m pip install pyemblite
+
 Install from latest github source:
 
 .. code-block:: console
