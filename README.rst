@@ -22,7 +22,7 @@
    :target: https://pypi.python.org/pypi/pyemblite/
    :alt: pyemblite python package
 
-Python wrapper for Embree-3. Source code adapted from
+Python wrapper for Embree-3 and Embree-4. Source code adapted from
 `pyembree <https://github.com/scopatz/pyembree>`_ Embree-2 wrapper.
 
 .. end long description.
@@ -76,8 +76,26 @@ Example:
    intersect_info = scene.run(ray_orgs, ray_dirs, output=True)
 
 
+Runtime Selection of Embree-3 or Embree-4
+=========================================
+
+Use the ``PYEMBLITE_EMBREE_MAJOR_VERSION`` environment variable to control the
+runtime version Embree API (when both versions are available):
+
+.. code-block:: console
+
+   $ PYEMBLITE_EMBREE_MAJOR_VERSION=3 python -c 'from pyemblite import rtcore as rtc; print(rtc.EmbreeDevice())'
+   $ PYEMBLITE_EMBREE_MAJOR_VERSION=4 python -c 'from pyemblite import rtcore as rtc; print(rtc.EmbreeDevice())'
+
+
 Installation
 ============
+
+Install from pypi:
+
+.. code-block:: console
+
+   $ python -m pip install pyemblite
 
 Install from latest github source:
 
@@ -124,7 +142,7 @@ Requires:
 
 - python-3 version `>= 3.4`,
 - `numpy <http://www.numpy.org/>`_ version `>= 1.7`,
-- `embree <https://embree.github.io>`_ `>= 3.0 < 4.0` (`Latest release <https://github.com/embree/embree/releases/latest>`_)
+- `embree <https://embree.github.io>`_ `>= 3.0 < 5.0` (`Latest release <https://github.com/embree/embree/releases/latest>`_)
 
 
 Testing

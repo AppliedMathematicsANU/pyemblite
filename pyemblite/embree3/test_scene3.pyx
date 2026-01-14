@@ -3,12 +3,12 @@ cimport numpy as np
 import numpy as np
 import logging
 import numbers
-from . cimport rtcore as rtc
-from . cimport rtcore_ray as rtcr
-from . cimport rtcore_geometry as rtcg
-from . cimport rtcore_buffer as rtcb
-from . cimport rtcore_scene as rtcs
-from .rtcore cimport Vertex, Triangle
+from . cimport rtcore3 as rtc
+from . cimport rtcore_ray3 as rtcr
+from . cimport rtcore_geometry3 as rtcg
+from . cimport rtcore_buffer3 as rtcb
+from . cimport rtcore_scene3 as rtcs
+from .rtcore3 cimport Vertex, Triangle
 
 
 log = logging.getLogger(__name__)

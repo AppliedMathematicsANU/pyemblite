@@ -3,9 +3,9 @@
 cimport cython
 cimport numpy as np
 from libcpp cimport bool
-from . cimport rtcore as rtc
-from . cimport rtcore_ray as rtcr
-from . cimport rtcore_geometry as rtcg
+from . cimport rtcore3 as rtc
+from . cimport rtcore_ray3 as rtcr
+from . cimport rtcore_geometry3 as rtcg
 
 cdef extern from "embree3/rtcore_scene.h":
 

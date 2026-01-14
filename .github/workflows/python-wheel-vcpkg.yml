@@ -14,8 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-13]
-        python-version: ["3.10"]
+        os: [ubuntu-latest, windows-latest, macos-15-intel, macos-15, ubuntu-24.04-arm]
+        python-version: ["3.11"]
 
     steps:
       - uses: actions/checkout@v4
@@ -82,11 +82,11 @@ jobs:
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_ENVIRONMENT_LINUX: "CMAKE_FETCH_VCPKG=ON"
-          # vcpkg does not support i686 nor aarch64
+          # vcpkg does not support i686
           CIBW_ARCHS: "auto64"
           # Skip musllinux builds
           CIBW_SKIP: "*-musllinux_*"
-          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-*"
+          CIBW_BUILD: "cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
           # Don't repair macOS wheels
           CIBW_REPAIR_WHEEL_COMMAND_MACOS: ""
           CIBW_BEFORE_BUILD_WINDOWS: "python -m pip install cmake"

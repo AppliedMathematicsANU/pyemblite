@@ -1,0 +1,15 @@
+{
+  "default-registry": {
+    "kind": "git",
+    "repository": "https://github.com/Microsoft/vcpkg",
+    "baseline": "dd3097e305afa53f7b4312371f62058d2e665320"
+  },
+  "registries": [
+    {
+      "kind": "git",
+      "repository": "https://github.com/AppliedMathematicsANU/vcpkg-registry-embree",
+      "baseline": "d1399e814b8646653a5082eb46fbc5cf584bc202",
+      "packages": [ "embree4" ]
+    }
+  ]
+}

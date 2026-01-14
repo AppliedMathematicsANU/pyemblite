@@ -24,7 +24,7 @@ elseif(CMAKE_FETCH_VCPKG OR DEFINED ENV{CMAKE_FETCH_VCPKG})
   include(FetchContent)
   FetchContent_Declare(vcpkg
     GIT_REPOSITORY https://github.com/microsoft/vcpkg/
-    GIT_TAG 2023.12.12
+    GIT_TAG 2025.07.25
   )
   FetchContent_MakeAvailable(vcpkg)
   set(CMAKE_TOOLCHAIN_FILE
@@ -47,8 +47,6 @@ MESSAGE(STATUS "Finding Cython...")
 FIND_PACKAGE(Cython REQUIRED)
 MESSAGE(STATUS "Finding NumPy...")
 FIND_PACKAGE(NumPy REQUIRED)
-MESSAGE(STATUS "Finding embree3...")
-find_package(embree 3 CONFIG REQUIRED)
 MESSAGE(STATUS "Finding PythonExtensions...")
 SET(Python_ADDITIONAL_VERSIONS "${Python_VERSION_MAJOR}.${Python_VERSION_MINOR}")
 FIND_PACKAGE(PythonExtensions REQUIRED)
@@ -57,17 +55,12 @@ PROJECT(pyemblite)
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${NumPy_INCLUDE_DIRS})
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/pyemblite)
 
 MESSAGE(STATUS "CMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
 
 SET(
   PYTHON_SITE_PACKAGES_INSTALL_DIR
   ${CMAKE_INSTALL_PREFIX}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages
-)
-SET(
-  PCSR_PYTHON_SITE_PACKAGES_INSTALL_DIR
-  ${PYTHON_SITE_PACKAGES_INSTALL_DIR}/pcsr
 )
 
 IF (DEFINED VCPKG_INSTALLED_DIR)
@@ -80,17 +73,9 @@ IF (DEFINED VCPKG_INSTALLED_DIR)
   )
 ENDIF()
 
-foreach (cymod rtcore rtcore_scene mesh_construction test_scene)
-  add_cython_target(${cymod} pyemblite/${cymod}.pyx CXX PY3)
-  add_library(${cymod} MODULE ${cymod})
-  PYTHON_EXTENSION_MODULE(${cymod})
-  target_link_libraries(${cymod} embree)
-  INSTALL(
-    TARGETS ${cymod}
-    RUNTIME_DEPENDENCIES
-    PRE_INCLUDE_REGEXES ${VCPKG_DEPENDENCIES}
-    PRE_EXCLUDE_REGEXES ".*"
-    DESTINATION pyemblite
-  )
-endforeach()
-
+IF (DEFINED CMAKE_TOOLCHAIN_FILE)
+  ADD_SUBDIRECTORY(pyemblite/embree4)
+ELSE()
+  ADD_SUBDIRECTORY(pyemblite/embree3)
+  ADD_SUBDIRECTORY(pyemblite/embree4)
+ENDIF()

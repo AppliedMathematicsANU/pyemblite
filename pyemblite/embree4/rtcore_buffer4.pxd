@@ -1,9 +1,9 @@
 # rtcore_buffer wrapper for Embree buffers.
 cimport cython
 cimport numpy as np
-from .rtcore cimport RTCDevice
+from .rtcore4 cimport RTCDevice
 
-cdef extern from "embree3/rtcore_buffer.h":
+cdef extern from "embree4/rtcore_buffer.h":
 
     # Types of buffers
     cdef enum RTCBufferType:
