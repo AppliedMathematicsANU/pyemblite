@@ -69,6 +69,7 @@ jobs:
       - name: Build and install with pip
         env:
           VCPKG_ROOT: ${{ runner.workspace }}/vcpkg
+          VCPKG_OVERLAY_TRIPLETS: ${{ runner.workspace }}/pyemblite/triplets
         run: python -m pip install --user ${{ github.workspace }}
 
       - name: Debug pyemblite install
