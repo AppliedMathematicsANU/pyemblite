@@ -69,7 +69,8 @@ jobs:
       - name: Build and install with pip
         env:
           VCPKG_ROOT: ${{ runner.workspace }}/vcpkg
-          VCPKG_OVERLAY_TRIPLETS: ${{ runner.os == 'Windows' && ${{ github.workspace }}'\\triplets' || ${{ github.workspace }}'/triplets' }}
+          TRIPLETS_DIR: ${{ runner.os == 'Windows' && '\\triplets' || '/triplets' }}
+          VCPKG_OVERLAY_TRIPLETS: ${{ runner.os }}${TRIPLETS_DIR}
         run: |
           echo VCPKG_ROOT=${VCPKG_ROOT}
           echo VCPKG_OVERLAY_TRIPLETS=${VCPKG_OVERLAY_TRIPLETS}
