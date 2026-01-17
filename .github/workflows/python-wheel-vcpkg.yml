@@ -90,8 +90,8 @@ jobs:
           echo "VCPKG_OVERLAY_TRIPLETS=${{ env.VCPKG_OVERLAY_TRIPLETS }}"
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}"
-          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
+          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\\vcpkg' || '/vcpkg' }}"
+          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT: VCPKG_ROOT="${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}" VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT_LINUX: VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}" CMAKE_FETCH_VCPKG="ON"
           CIBW_ENVIRONMENT_WINDOWS: 
@@ -200,8 +200,8 @@ jobs:
           echo "VCPKG_OVERLAY_TRIPLETS=${{ env.VCPKG_OVERLAY_TRIPLETS }}"
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}"
-          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
+          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\\vcpkg' || '/vcpkg' }}"
+          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT: VCPKG_ROOT="${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}" VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT_LINUX: VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}" CMAKE_FETCH_VCPKG="ON"
           CIBW_ENVIRONMENT_WINDOWS: 
