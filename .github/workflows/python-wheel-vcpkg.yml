@@ -85,10 +85,16 @@ jobs:
         run: |
           echo "CIBW_ENVIRONMENT=${{ env.CIBW_ENVIRONMENT }}"
           echo "CIBW_ENVIRONMENT_LINUX=${{ env.CIBW_ENVIRONMENT_LINUX }}"
+          echo "CIBW_ENVIRONMENT_WINDOWS=${{ env.CIBW_ENVIRONMENT_WINDOWS}}"
+          echo "VCPKG_ROOT=${{ env.VCPKG_ROOT }}"
+          echo "VCPKG_OVERLAY_TRIPLETS=${{ env.VCPKG_OVERLAY_TRIPLETS }}"
           python -m cibuildwheel --output-dir wheelhouse
         env:
+          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}"
+          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT: VCPKG_ROOT="${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}" VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT_LINUX: VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}" CMAKE_FETCH_VCPKG="ON"
+          CIBW_ENVIRONMENT_WINDOWS: 
           # vcpkg does not support i686
           CIBW_ARCHS: "auto64"
           # Skip musllinux builds
@@ -189,10 +195,16 @@ jobs:
         run: |
           echo "CIBW_ENVIRONMENT=${{ env.CIBW_ENVIRONMENT }}"
           echo "CIBW_ENVIRONMENT_LINUX=${{ env.CIBW_ENVIRONMENT_LINUX }}"
+          echo "CIBW_ENVIRONMENT_WINDOWS=${{ env.CIBW_ENVIRONMENT_WINDOWS}}"
+          echo "VCPKG_ROOT=${{ env.VCPKG_ROOT }}"
+          echo "VCPKG_OVERLAY_TRIPLETS=${{ env.VCPKG_OVERLAY_TRIPLETS }}"
           python -m cibuildwheel --output-dir wheelhouse
         env:
+          VCPKG_ROOT: "${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}"
+          VCPKG_OVERLAY_TRIPLETS: "${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT: VCPKG_ROOT="${{ runner.workspace }}${{ runner.os == 'Windows' && '\vcpkg' || '/vcpkg' }}" VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}"
           CIBW_ENVIRONMENT_LINUX: VCPKG_OVERLAY_TRIPLETS="${{ github.workspace }}${{ runner.os == 'Windows' && '\triplets' || '/triplets' }}" CMAKE_FETCH_VCPKG="ON"
+          CIBW_ENVIRONMENT_WINDOWS: 
           # vcpkg does not support i686
           CIBW_ARCHS: "auto64"
           # Skip musllinux builds
