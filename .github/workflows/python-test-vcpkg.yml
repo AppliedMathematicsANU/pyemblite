@@ -70,10 +70,10 @@ jobs:
         env:
           VCPKG_ROOT: ${{ runner.workspace }}/vcpkg
           TRIPLETS_DIR: ${{ runner.os == 'Windows' && '\\triplets' || '/triplets' }}
-          VCPKG_OVERLAY_TRIPLETS: ${{ runner.os }}${TRIPLETS_DIR}
+          VCPKG_OVERLAY_TRIPLETS: ${{ runner.os }}${{ env.TRIPLETS_DIR }}
         run: |
-          echo VCPKG_ROOT=${VCPKG_ROOT}
-          echo VCPKG_OVERLAY_TRIPLETS=${VCPKG_OVERLAY_TRIPLETS}
+          echo VCPKG_ROOT=${{ env.VCPKG_ROOT }}
+          echo VCPKG_OVERLAY_TRIPLETS=${{ env.VCPKG_OVERLAY_TRIPLETS }}
           python -m pip install --user ${{ github.workspace }}
 
       - name: Debug pyemblite install
